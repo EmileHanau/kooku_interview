@@ -1,0 +1,24 @@
+version: '3'
+services:
+  kooku_db:
+    image: "postgres" # use latest official postgres version
+    volumes:
+      - database_data:/var/lib/postgresql/data/ # persist data even if container shuts down
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_USER=kooku
+      - POSTGRES_PASSWORD=job
+      - POSTGRES_DB=kooku_db
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - kooku_db
+
+volumes:
+  database_data: # named volumes can be managed easier using docker-compose
